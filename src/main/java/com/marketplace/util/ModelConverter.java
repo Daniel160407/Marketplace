@@ -2,6 +2,7 @@ package com.marketplace.util;
 
 import com.marketplace.dto.ProductDto;
 import com.marketplace.model.Product;
+import com.marketplace.model.ProductWithImage;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -23,13 +24,13 @@ public class ModelConverter {
         return productDtos;
     }
 
-    public Product convert(ProductDto productDto) {
+    public Product convert(ProductWithImage product, String imgUrl) {
         return Product.builder()
-                .name(productDto.getName())
-                .price(productDto.getPrice())
-                .description(productDto.getDescription())
-                .submittionTime(productDto.getSubmittionTime())
-                .photoUrl(productDto.getPhotoUrl())
+                .name(product.getName())
+                .price(product.getPrice())
+                .description(product.getDescription())
+                .submittionTime(product.getSubmittionTime())
+                .photoUrl(imgUrl)
                 .build();
     }
 }
