@@ -8,6 +8,7 @@ import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,6 +18,7 @@ public class ProductServiceImpl implements ProductService {
     private final ProductsRepository productsRepository;
     private final ModelConverter modelConverter;
     private final ImageService imageService;
+
     @Autowired
     public ProductServiceImpl(ProductsRepository productsRepository, ModelConverter modelConverter, ImageService imageService) {
         this.productsRepository = productsRepository;
@@ -25,9 +27,10 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<ProductDto> getProducts(int page) {
-        Pageable pageable = PageRequest.of(page, 6);
-        val products = productsRepository.findAll(pageable).stream().toList();
+    public List<ProductDto> getProducts(int page, String sort, String direction) {
+        Sort.Direction sortDirection = Sort.Direction.fromString(direction);
+        Pageable pageable = PageRequest.of(page, 6, Sort.by(sortDirection, sort));
+        val products = productsRepository.findAll(pageable).getContent();
         return modelConverter.convertProductsToDtoList(products);
     }
 
@@ -39,8 +42,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<ProductDto> addProduct(ProductWithImage product) {
-        imageService.storePhoto(product.getImage(),product.getImage().getOriginalFilename());
-
+        imageService.storePhoto(product.getImage(), product.getImage().getOriginalFilename());
         productsRepository.save(modelConverter.convert(product, "/images/" + product.getImage().getOriginalFilename()));
         return modelConverter.convertProductsToDtoList(productsRepository.getAllBy());
     }

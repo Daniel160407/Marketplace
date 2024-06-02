@@ -19,7 +19,7 @@ public class ModelConverter {
                         .name(product.getName())
                         .price(product.getPrice())
                         .description(product.getDescription())
-                        .submittionTime(product.getSubmittionTime())
+                        .submissionTime(product.getSubmissionTime())
                         .photoUrl(product.getPhotoUrl())
                         .uploader(product.getUploader())
                         .build()
@@ -32,7 +32,7 @@ public class ModelConverter {
                 .name(product.getName())
                 .price(product.getPrice())
                 .description(product.getDescription())
-                .submittionTime(product.getSubmittionTime())
+                .submissionTime(product.getSubmissionTime())
                 .photoUrl(imgUrl)
                 .uploader(product.getUploader())
                 .build();

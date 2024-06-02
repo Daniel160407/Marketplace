@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.Instant;
 import java.util.List;
 
 @Controller
@@ -26,8 +27,10 @@ public class ProductController {
 
     @GetMapping
     @ResponseBody
-    public ResponseEntity<List<ProductDto>> getProducts(@RequestParam int page) {
-        return ResponseEntity.ok().body(productService.getProducts(page));
+    public ResponseEntity<List<ProductDto>> getProducts(@RequestParam int page,
+                                                        @RequestParam String sort,
+                                                        @RequestParam String direction) {
+        return ResponseEntity.ok().body(productService.getProducts(page, sort, direction));
     }
 
     @GetMapping("/amount")
@@ -41,7 +44,6 @@ public class ProductController {
     public ResponseEntity<List<ProductDto>> addProduct(@RequestPart("title") String title,
                                                        @RequestPart("price") String price,
                                                        @RequestPart("description") String description,
-                                                       @RequestPart("submittionTime") String time,
                                                        @RequestPart("image") MultipartFile image,
                                                        @RequestPart("uploader") String uploader) {
 
@@ -49,12 +51,13 @@ public class ProductController {
                 .name(title)
                 .price(price)
                 .description(description)
-                .submittionTime(time)
+                .submissionTime(Instant.now())
                 .image(image)
                 .uploader(uploader)
                 .build()
         ));
     }
+
     @RequestMapping(method = RequestMethod.OPTIONS)
     public ResponseEntity<?> handleOptions() {
         return ResponseEntity.ok().allow(HttpMethod.GET, HttpMethod.POST, HttpMethod.PUT, HttpMethod.DELETE, HttpMethod.OPTIONS).build();

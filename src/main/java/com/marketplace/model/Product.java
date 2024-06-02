@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.Instant;
+
 @Data
 @Builder
 @AllArgsConstructor
@@ -23,8 +25,8 @@ public class Product {
     private String price;
     @Column(name = "description")
     private String description;
-    @Column(name = "submittion_time")
-    private String submittionTime;
+    @Column(name = "submission_time")
+    private Instant submissionTime;
     @Column(name = "photo_url")
     private String photoUrl;
     @Column(name = "uploader")
