@@ -8,6 +8,8 @@ import com.marketplace.service.exception.AccountNotRegisteredException;
 import com.marketplace.service.exception.InvalidEmailOrPasswordException;
 import com.marketplace.service.exception.InvalidUsernameException;
 import com.marketplace.util.ModelConverter;
+import jakarta.mail.internet.AddressException;
+import jakarta.mail.internet.InternetAddress;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -46,14 +48,21 @@ public class UserServiceImpl implements UserService {
         User user = usersRepository.findByEmail(userDto.getEmail());
         if (user != null) {
             throw new AccountAlreadyRegisteredException();
-        } else {
-            Pattern pattern = Pattern.compile("^\\w{8,20}$");
-            Matcher matcher = pattern.matcher(userDto.getName());
-            if (matcher.matches()) {
-                usersRepository.save(modelConverter.convert(userDto));
-            } else {
-                throw new InvalidUsernameException();
-            }
         }
+
+        Pattern pattern = Pattern.compile("^\\w{8,20}$");
+        Matcher matcher = pattern.matcher(userDto.getName());
+        if (!matcher.matches()) {
+            throw new InvalidUsernameException();
+        }
+
+        try {
+            InternetAddress emailAddr = new InternetAddress(userDto.getEmail());
+            emailAddr.validate();
+        } catch (AddressException ex) {
+            throw new InvalidEmailOrPasswordException();
+        }
+
+        usersRepository.save(modelConverter.convert(userDto));
     }
 }
