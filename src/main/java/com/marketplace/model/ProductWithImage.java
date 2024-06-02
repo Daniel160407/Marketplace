@@ -14,4 +14,5 @@ public class ProductWithImage {
     private String description;
     private String submittionTime;
     private MultipartFile image;
+    private String uploader;
 }

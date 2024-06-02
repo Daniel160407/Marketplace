@@ -4,6 +4,8 @@ import com.marketplace.dto.ProductDto;
 import com.marketplace.model.ProductWithImage;
 import com.marketplace.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -24,8 +26,8 @@ public class ProductController {
 
     @GetMapping
     @ResponseBody
-    public List<ProductDto> getProducts(@RequestParam int page) {
-        return productService.getProducts(page);
+    public ResponseEntity<List<ProductDto>> getProducts(@RequestParam int page) {
+        return ResponseEntity.ok().body(productService.getProducts(page));
     }
 
     @GetMapping("/amount")
@@ -36,19 +38,25 @@ public class ProductController {
 
     @PostMapping
     @ResponseBody
-    public List<ProductDto> addProduct(@RequestPart("title") String title,
-                                 @RequestPart("price") String price,
-                                 @RequestPart("description") String description,
-                                 @RequestPart("submittionTime") String time,
-                                 @RequestPart("image") MultipartFile image) {
+    public ResponseEntity<List<ProductDto>> addProduct(@RequestPart("title") String title,
+                                                       @RequestPart("price") String price,
+                                                       @RequestPart("description") String description,
+                                                       @RequestPart("submittionTime") String time,
+                                                       @RequestPart("image") MultipartFile image,
+                                                       @RequestPart("uploader") String uploader) {
 
-        return productService.addProduct(ProductWithImage.builder()
+        return ResponseEntity.status(HttpStatus.CREATED).body(productService.addProduct(ProductWithImage.builder()
                 .name(title)
                 .price(price)
                 .description(description)
                 .submittionTime(time)
                 .image(image)
+                .uploader(uploader)
                 .build()
-        );
+        ));
+    }
+    @RequestMapping(method = RequestMethod.OPTIONS)
+    public ResponseEntity<?> handleOptions() {
+        return ResponseEntity.ok().allow(HttpMethod.GET, HttpMethod.POST, HttpMethod.PUT, HttpMethod.DELETE, HttpMethod.OPTIONS).build();
     }
 }

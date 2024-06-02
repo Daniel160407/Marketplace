@@ -11,4 +11,5 @@ public class ProductDto {
     private String description;
     private String submittionTime;
     private String photoUrl;
+    private String uploader;
 }
