@@ -12,7 +12,7 @@ import java.nio.file.StandardCopyOption;
 
 @Service
 public class ImageService {
-    private static final String ROOT_NAME = "src/main/resources/static/images";
+    private static final String ROOT_NAME = "src/main/webapp/images";
 
     private final Path photoRoot = Paths.get(ROOT_NAME);
     @PostConstruct
