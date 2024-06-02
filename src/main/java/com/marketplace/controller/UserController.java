@@ -5,6 +5,7 @@ import com.marketplace.service.UserService;
 import com.marketplace.service.exception.AccountAlreadyRegisteredException;
 import com.marketplace.service.exception.AccountNotRegisteredException;
 import com.marketplace.service.exception.InvalidEmailOrPasswordException;
+import com.marketplace.service.exception.InvalidUsernameException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -42,10 +43,11 @@ public class UserController {
         try {
             userService.addUser(userDto);
             return ResponseEntity.ok().build();
-        } catch (AccountAlreadyRegisteredException e) {
+        } catch (AccountAlreadyRegisteredException | InvalidUsernameException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
     }
+
     @RequestMapping(method = RequestMethod.OPTIONS)
     public ResponseEntity<?> handleOptions() {
         return ResponseEntity.ok().allow(HttpMethod.GET, HttpMethod.POST, HttpMethod.PUT, HttpMethod.DELETE, HttpMethod.OPTIONS).build();

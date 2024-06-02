@@ -6,9 +6,13 @@ import com.marketplace.repository.UsersRepository;
 import com.marketplace.service.exception.AccountAlreadyRegisteredException;
 import com.marketplace.service.exception.AccountNotRegisteredException;
 import com.marketplace.service.exception.InvalidEmailOrPasswordException;
+import com.marketplace.service.exception.InvalidUsernameException;
 import com.marketplace.util.ModelConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -43,7 +47,13 @@ public class UserServiceImpl implements UserService {
         if (user != null) {
             throw new AccountAlreadyRegisteredException();
         } else {
-            usersRepository.save(modelConverter.convert(userDto));
+            Pattern pattern = Pattern.compile("^\\w{8,20}$");
+            Matcher matcher = pattern.matcher(userDto.getName());
+            if (matcher.matches()) {
+                usersRepository.save(modelConverter.convert(userDto));
+            } else {
+                throw new InvalidUsernameException();
+            }
         }
     }
 }
